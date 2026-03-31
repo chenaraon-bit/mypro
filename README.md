@@ -28,3 +28,18 @@ CSV至少包含：`timestamp, open, high, low, close, volume`。
 - 未完全实现：真实交易所私有WS对账、复杂排队成交模型、严格CPCV版PBO。
 
 建议下一步：补上实时适配器、审计日志、影子模式与金丝雀执行器。
+
+
+## 可以接入模拟盘吗？
+
+可以。当前仓库已提供本地模拟盘执行器 `PaperBroker` 与运行脚本：
+
+```bash
+export PYTHONPATH=src
+python scripts/run_paper_trading.py --csv your_ohlcv.csv --symbol BTCUSDT
+```
+
+说明：
+- 这是**本地 paper account**（不发真实订单），可先验证信号、仓位与资金曲线。
+- 下一步可把 `PaperBroker` 替换为交易所 testnet 适配器（例如 Binance/Bybit testnet REST+WS）。
+
