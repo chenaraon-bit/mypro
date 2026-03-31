@@ -62,3 +62,37 @@ python scripts/okx_sim_trade.py --inst-id BTC-USDT --side buy --ord-type market 
 - API 权限建议只开“读取/交易”，**不要开启提現权限**。
 - 如果你曾在聊天中暴露密钥，请立即在交易所后台删除并重建。
 
+
+
+## 影子模式 / 金丝雀 / 订单回报
+
+已补齐你提到的三项：
+
+1) 影子模式（只产生日志，不下单）
+```bash
+export PYTHONPATH=src
+python scripts/shadow_mode.py --csv your_ohlcv.csv --symbol BTCUSDT
+```
+
+2) 金丝雀下单（OKX 模拟盘，小仓位 + 幂等ID + 重试）
+```bash
+export PYTHONPATH=src
+export OKX_API_KEY=...
+export OKX_SECRET_KEY=...
+export OKX_PASSPHRASE=...
+python scripts/canary_okx_sim.py --inst-id BTC-USDT --side buy --sz 0.0001
+```
+
+3) 私有WS订单回报（OKX，模拟盘）
+```bash
+export PYTHONPATH=src
+export OKX_API_KEY=...
+export OKX_SECRET_KEY=...
+export OKX_PASSPHRASE=...
+python scripts/okx_ws_order_stream.py --limit 20
+```
+
+对应模块：
+- `src/ctrader/execution/idempotent.py`（clOrdId + retry）
+- `src/ctrader/execution/okx_ws_orders.py`（订单流监听）
+
